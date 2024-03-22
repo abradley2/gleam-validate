@@ -1,0 +1,12 @@
+name = "validate"
+description = "Monadic Validation in Gleam!"
+version = "1.0.0"
+licences = ["ISC"]
+repository = { type = "github", user = "abradley2", repo = "gleam-validate"}
+links = [{ title = "Website", href = "https://github.com/abradley2/gleam-validate" }]
+
+[dependencies]
+gleam_stdlib = "~> 0.34 or ~> 1.0"
+
+[dev-dependencies]
+gleeunit = "~> 1.0"
