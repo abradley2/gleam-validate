@@ -96,13 +96,3 @@ pub fn and_map(
     }
   }
 }
-
-pub fn try_error_list(
-  error_list: List(Option(error)),
-  val: value,
-) -> Result(value, ErrorList(error)) {
-  case option.values(error_list) {
-    [] -> Ok(val)
-    [error, ..errors] -> Error(#(error, errors))
-  }
-}
