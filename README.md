@@ -1,8 +1,5 @@
 # Monadic Validation in Gleam!
 
-[![Package Version](https://img.shields.io/hexpm/v/validate)](https://hex.pm/packages/validate)
-[![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/validate/)
-
 ```sh
 gleam add validate
 ```
@@ -66,8 +63,6 @@ pub fn small_form_test() {
   should.be_ok(validation_result)
 }
 ```
-
-Further documentation can be found at <https://hexdocs.pm/validate>.
 
 ## Development
 
