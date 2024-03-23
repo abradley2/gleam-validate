@@ -15,13 +15,13 @@ pub type Validation(validated, error) =
 pub type ErrorList(error) =
   #(error, List(error))
 
-/// Convenience function for lifting a single error into our non-empty list error.
+/// Convenience function for lifting a single error into our non-empty `ErrorList` type.
 pub fn error(err: error) -> Validation(a, error) {
   Error(#(err, []))
 }
 
-/// Convenience function for lifting a value into our validation type's `Ok` branch, like other methods
-/// in this module, it is literally just an alias for a `Result` type method. 
+/// Convenience function for lifting a value into our validation type's `Ok` branch. As with other methods
+/// in this module, it is just an alias for a `Result` type method. 
 pub fn succeed(a) -> Validation(a, error) {
   Ok(a)
 }
@@ -71,10 +71,10 @@ pub fn map_error(
   }
 }
 
-/// Compose together multiple validations. This combine the errors of all validations that fail,
+/// Compose together multiple validations. This combines the errors of all validations that fail,
 /// and does not stop at the first failure. Takes the input to be validated as the first argument,
-/// then a non-empty list of unary functions that take that input and return a validation result
-/// of the same type.
+/// then a non-empty list of unary functions that transform the same input type into a `Validation`
+/// result of the same type.
 /// 
 /// 
 /// ```gleam
@@ -93,7 +93,7 @@ pub fn compose(
   })
 }
 
-/// Combine two validation results into one. This mainly for merging errors. The `Ok `branch of the
+/// Combine two validation results into one. This is mainly for merging errors. The `Ok `branch of the
 /// last validation supplied will be the returned `Ok` branch. This is used internally by `compose`
 pub fn and_also(
   validation_a: Validation(a, error),
@@ -113,7 +113,8 @@ pub fn and_also(
 }
 
 /// Specify a validation that will run after a given validation, using its result. This is very
-/// useful for validations that need to run after a transform is attempted.
+/// useful for validations that need to run after a transform is attempted. Note that `and_then`
+/// does not _collect_ errors as `compose` does, it will stop at the first error.
 /// 
 /// ```gleam
 /// let age_result =
