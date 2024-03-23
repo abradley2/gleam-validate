@@ -1,6 +1,6 @@
 name = "validate_monadic"
 description = "Monadic Validation in Gleam!"
-version = "1.0.0"
+version = "1.0.1"
 licences = ["ISC"]
 repository = { type = "github", user = "abradley2", repo = "gleam-validate"}
 links = [{ title = "Website", href = "https://github.com/abradley2/gleam-validate" }]
