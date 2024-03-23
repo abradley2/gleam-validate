@@ -30,6 +30,16 @@ pub type ValidatedForm {
   ValidatedForm(FirstName, LastName, Age)
 }
 
+fn no_numbers(s: String) {
+  case
+    string.to_graphemes(s)
+    |> list.all(fn(c) { string.contains("123456789", c) == False })
+  {
+    True -> validate.succeed(s)
+    False -> validate.error("String must not contain numbers")
+  }
+}
+
 fn string_non_empty(s: String) {
   case string.length(s) > 0 {
     True -> validate.succeed(s)
@@ -97,7 +107,12 @@ pub fn small_form_test() {
 }
 
 pub fn small_form_errors_test() {
-  let form = Form(first_name: "Tony", last_name: "", age: "hello")
+  let form =
+    Form(
+      first_name: "TonyTonyTonyTonyTonyTonyTony9",
+      last_name: "Bradley",
+      age: "hello",
+    )
 
   let validate_form =
     function.curry3(fn(first_name, last_name, age) {
@@ -106,8 +121,10 @@ pub fn small_form_errors_test() {
 
   let first_name_result =
     form.first_name
-    |> string_non_empty
-    |> validate.and_then(string_shorter_than(_, 100))
+    |> validate.compose(no_numbers, [
+      string_non_empty,
+      string_shorter_than(_, 10),
+    ])
     |> validate.map(FirstName)
     |> validate.map_error(string.append("First Name Error: ", _))
 
@@ -134,5 +151,5 @@ pub fn small_form_errors_test() {
   let #(first_err, rest_err) = should.be_error(validation_result)
 
   list.length(list.prepend(rest_err, first_err))
-  |> should.equal(2)
+  |> should.equal(3)
 }

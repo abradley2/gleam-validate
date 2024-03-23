@@ -17,11 +17,6 @@ pub type ErrorList(error) =
   #(error, List(error))
 ```
 
-For `Validation`, we implement [Functor](https://en.wikipedia.org/wiki/Functor),
-[Applicative](https://en.wikipedia.org/wiki/Applicative_functor), 
-and [Monad](https://en.wikipedia.org/wiki/Monad_(functional_programming)). This is really all you need for
-type safe form validation.
-
 More convenient abstractions can be built on top of this.
 
 Check out the tests for examples around usage:
