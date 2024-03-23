@@ -34,34 +34,28 @@ pub fn map_error(
   }
 }
 
+pub fn and_also(
+  validation_a: Validation(a, error),
+  validation_b: Validation(a, error),
+) -> Validation(a, error) {
+  case validation_a, validation_b {
+    Ok(a), Ok(_) -> Ok(a)
+    Error(#(err_a_head, err_a_rest)), Error(#(err_b_head, err_b_rest)) -> {
+      Error(#(
+        err_a_head,
+        list.concat([err_a_rest, list.prepend(err_b_rest, err_b_head)]),
+      ))
+    }
+    Error(err), _ -> Error(err)
+    _, Error(err) -> Error(err)
+  }
+}
+
 pub fn and_then(
   over validation: Validation(a, error),
   bind bind_fn: fn(a) -> Validation(b, error),
 ) -> Validation(b, error) {
-  case validation {
-    Ok(a) -> {
-      case bind_fn(a) {
-        Ok(b) -> Ok(b)
-        Error(err) -> Error(err)
-      }
-    }
-    Error(#(prev_err_head, prev_err_rest)) -> {
-      case validation {
-        Ok(_) -> {
-          Error(#(prev_err_head, prev_err_rest))
-        }
-        Error(#(next_err_head, next_err_rest)) -> {
-          Error(#(
-            prev_err_head,
-            list.flatten([
-              prev_err_rest,
-              list.prepend(next_err_rest, next_err_head),
-            ]),
-          ))
-        }
-      }
-    }
-  }
+  result.then(validation, bind_fn)
 }
 
 pub fn and_map(

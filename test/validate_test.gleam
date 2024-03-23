@@ -1,6 +1,5 @@
 import gleeunit
 import gleeunit/should
-import gleam/io
 import validate
 import gleam/function
 import gleam/string
@@ -45,15 +44,17 @@ fn string_shorter_than(s: String, limit: Int) {
   }
 }
 
-fn is_postive_int(s: String) {
+fn is_int(s: String) {
   case int.base_parse(s, 10) {
-    Ok(i) -> {
-      case i >= 0 {
-        True -> validate.succeed(i)
-        False -> validate.error("Must not be a negative number")
-      }
-    }
+    Ok(i) -> validate.succeed(i)
     Error(_) -> validate.error("Must be a number")
+  }
+}
+
+fn is_positive(i: Int) {
+  case i >= 0 {
+    True -> validate.succeed(i)
+    False -> validate.error("Must not be a negative number")
   }
 }
 
@@ -81,7 +82,8 @@ pub fn small_form_test() {
 
   let age_result =
     form.age
-    |> is_postive_int
+    |> is_int
+    |> validate.and_then(is_positive)
     |> validate.map(Age)
     |> validate.map_error(string.append("Age Error: ", _))
 
@@ -116,11 +118,10 @@ pub fn small_form_errors_test() {
     |> validate.map(LastName)
     |> validate.map_error(string.append("Last Name Error: ", _))
 
-  io.debug(last_name_result)
-
   let age_result =
     form.age
-    |> is_postive_int
+    |> is_int
+    |> validate.and_then(is_positive)
     |> validate.map(Age)
     |> validate.map_error(string.append("Age Error: ", _))
 
@@ -131,8 +132,6 @@ pub fn small_form_errors_test() {
     |> validate.and_map(age_result)
 
   let #(first_err, rest_err) = should.be_error(validation_result)
-
-  io.debug(#(first_err, rest_err))
 
   list.length(list.prepend(rest_err, first_err))
   |> should.equal(2)
