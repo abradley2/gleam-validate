@@ -1,4 +1,4 @@
-name = "validate"
+name = "validate_monadic"
 description = "Monadic Validation in Gleam!"
 version = "1.0.0"
 licences = ["ISC"]

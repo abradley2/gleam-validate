@@ -1,6 +1,6 @@
 import gleeunit
 import gleeunit/should
-import validate
+import validate_monadic as validate
 import gleam/function
 import gleam/string
 import gleam/int

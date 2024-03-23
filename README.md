@@ -1,5 +1,13 @@
 # Monadic Validation in Gleam!
 
+```sh
+gleam add validate_monadic
+```
+
+```gleam
+import validate_monadic as validate
+```
+
 # Usage
 
 This module is the minimal set of functions around a single type alias for `Result` so it may 
