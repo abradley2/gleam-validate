@@ -1,9 +1,11 @@
 import gleeunit
 import gleeunit/should
+import gleam/io
 import validate
 import gleam/function
 import gleam/string
 import gleam/int
+import gleam/list
 
 pub fn main() {
   gleeunit.main()
@@ -90,4 +92,48 @@ pub fn small_form_test() {
     |> validate.and_map(age_result)
 
   should.be_ok(validation_result)
+}
+
+pub fn small_form_errors_test() {
+  let form = Form(first_name: "Tony", last_name: "", age: "hello")
+
+  let validate_form =
+    function.curry3(fn(first_name, last_name, age) {
+      ValidatedForm(first_name, last_name, age)
+    })
+
+  let first_name_result =
+    form.first_name
+    |> string_non_empty
+    |> validate.and_then(string_shorter_than(_, 100))
+    |> validate.map(FirstName)
+    |> validate.map_error(string.append("First Name Error: ", _))
+
+  let last_name_result =
+    form.last_name
+    |> string_non_empty
+    |> validate.and_then(string_shorter_than(_, 100))
+    |> validate.map(LastName)
+    |> validate.map_error(string.append("Last Name Error: ", _))
+
+  io.debug(last_name_result)
+
+  let age_result =
+    form.age
+    |> is_postive_int
+    |> validate.map(Age)
+    |> validate.map_error(string.append("Age Error: ", _))
+
+  let validation_result =
+    validate.succeed(validate_form)
+    |> validate.and_map(first_name_result)
+    |> validate.and_map(last_name_result)
+    |> validate.and_map(age_result)
+
+  let #(first_err, rest_err) = should.be_error(validation_result)
+
+  io.debug(#(first_err, rest_err))
+
+  list.length(list.prepend(rest_err, first_err))
+  |> should.equal(2)
 }

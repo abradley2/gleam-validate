@@ -1,5 +1,5 @@
-import gleam/option.{type Option}
 import gleam/list
+import gleam/result
 
 pub type Validation(validated, error) =
   Result(validated, ErrorList(error))
@@ -19,10 +19,7 @@ pub fn map(
   over validation: Validation(a, error),
   with map_fn: fn(a) -> b,
 ) -> Validation(b, error) {
-  case validation {
-    Ok(a) -> Ok(map_fn(a))
-    Error(err) -> Error(err)
-  }
+  result.map(validation, map_fn)
 }
 
 pub fn map_error(
