@@ -71,11 +71,6 @@ fn is_positive(i: Int) {
 pub fn small_form_test() {
   let form = Form(first_name: "Tony", last_name: "Bradley", age: "33")
 
-  let validate_form =
-    function.curry3(fn(first_name, last_name, age) {
-      ValidatedForm(first_name, last_name, age)
-    })
-
   let first_name_result =
     form.first_name
     |> string_non_empty
@@ -98,7 +93,8 @@ pub fn small_form_test() {
     |> validate.map_error(string.append("Age Error: ", _))
 
   let validation_result =
-    validate.succeed(validate_form)
+    function.curry3(ValidatedForm)
+    |> validate.succeed
     |> validate.and_map(first_name_result)
     |> validate.and_map(last_name_result)
     |> validate.and_map(age_result)
@@ -113,11 +109,6 @@ pub fn small_form_errors_test() {
       last_name: "Bradley",
       age: "hello",
     )
-
-  let validate_form =
-    function.curry3(fn(first_name, last_name, age) {
-      ValidatedForm(first_name, last_name, age)
-    })
 
   let first_name_result =
     form.first_name
@@ -143,7 +134,8 @@ pub fn small_form_errors_test() {
     |> validate.map_error(string.append("Age Error: ", _))
 
   let validation_result =
-    validate.succeed(validate_form)
+    function.curry3(ValidatedForm)
+    |> validate.succeed
     |> validate.and_map(first_name_result)
     |> validate.and_map(last_name_result)
     |> validate.and_map(age_result)

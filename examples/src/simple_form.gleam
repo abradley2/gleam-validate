@@ -50,9 +50,7 @@ pub fn validate_form(form: Form) -> Validation(ValidForm, String) {
     |> validate.map(ValidAge)
     |> validate.map_error(string.append("Age error: ", _))
 
-  function.curry3(fn(first_name, last_name, age) {
-    ValidForm(first_name, last_name, age)
-  })
+  function.curry3(ValidForm)
   |> validate.succeed
   |> validate.and_map(first_name_result)
   |> validate.and_map(last_name_result)

@@ -1,4 +1,4 @@
-import validate_monadic.{type ErrorList} as validate
+import validate_monadic.{type Validation} as validate
 import validators
 import gleam/string
 import gleam/function
@@ -8,11 +8,11 @@ import gleam/list
 pub type Form {
   Form(
     first_name: String,
-    first_name_errors: Result(Nil, ErrorList(String)),
+    first_name_errors: Validation(Nil, String),
     last_name: String,
-    last_name_errors: Result(Nil, ErrorList(String)),
+    last_name_errors: Validation(Nil, String),
     age: String,
-    age_errors: Result(Nil, ErrorList(String)),
+    age_errors: Validation(Nil, String),
   )
 }
 
@@ -86,9 +86,7 @@ pub fn validate_form(form: Form) -> Result(ValidForm, Form) {
       }),
     )
 
-  function.curry3(fn(first_name, last_name, age) {
-    ValidForm(first_name, last_name, age)
-  })
+  function.curry3(ValidForm)
   |> validate.succeed
   |> validate.and_map(first_name_result)
   |> validate.and_map(last_name_result)
